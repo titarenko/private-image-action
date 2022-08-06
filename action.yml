@@ -3,10 +3,24 @@ description: 'logs into private registry, builds and pushes docker image'
 
 inputs:
 
-  name:
+  image:
     description: 'image name'
     required: true
     default: ${{ github.event.repository.name }}
+
+  registry:
+    description: 'registry hostname'
+    required: true
+    default: reg.goevolve.org
+
+  user:
+    description: 'registry user'
+    required: true
+    default: github
+
+  password:
+    description: 'registry password (for example, take it from ${{ secrets.REGISTRY_PASSWORD }})'
+    required: true
 
 runs:
   using: "composite"
@@ -15,14 +29,14 @@ runs:
       name: Login to registry
       uses: docker/login-action@v2
       with:
-        registry: reg.goevolve.org
-        username: github
-        password: ${{ secrets.REGISTRY_PASSWORD }}
+        registry: ${{inputs.registry}}
+        username: ${{inputs.user}}
+        password: ${{inputs.password}}
     -
       name: Build and push
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: reg.goevolve.org/{{inputs.name}}
-        cache-from: type=registry,ref=reg.goevolve.org/{{inputs.name}}
+        tags: ${{inputs.registry}}/${{inputs.name}}
+        cache-from: type=registry,ref=${{inputs.registry}}/${{inputs.name}}
         cache-to: type=inline
