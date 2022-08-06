@@ -6,7 +6,7 @@ inputs:
   image:
     description: 'image name'
     required: true
-    default: ${{ github.event.repository.name }}
+    default: ${{github.event.repository.name}}
 
   registry:
     description: 'registry hostname'
@@ -19,7 +19,7 @@ inputs:
     default: github
 
   password:
-    description: 'registry password (for example, take it from ${{ secrets.REGISTRY_PASSWORD }})'
+    description: 'registry password (for example, take it from secrets.REGISTRY_PASSWORD)'
     required: true
 
 runs:
@@ -37,6 +37,6 @@ runs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: ${{inputs.registry}}/${{inputs.name}}
-        cache-from: type=registry,ref=${{inputs.registry}}/${{inputs.name}}
+        tags: ${{inputs.registry}}/${{inputs.image}}
+        cache-from: type=registry,ref=${{inputs.registry}}/${{inputs.image}}
         cache-to: type=inline
